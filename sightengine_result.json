@@ -1,0 +1,45 @@
+{
+  "status": "success",
+  "request": {
+    "id": "req_iRpXxrBiMB3CkXliyL4oq",
+    "timestamp": 1752943534.020644,
+    "operations": 6
+  },
+  "faces": [
+    {
+      "x1": 0.2874,
+      "y1": 0.1379,
+      "x2": 0.7644,
+      "y2": 0.5414,
+      "features": {
+        "left_eye": {
+          "x": 0.6782,
+          "y": 0.3138
+        },
+        "right_eye": {
+          "x": 0.4655,
+          "y": 0.3172
+        },
+        "nose_tip": {
+          "x": 0.6092,
+          "y": 0.3931
+        },
+        "left_mouth_corner": {
+          "x": 0.6609,
+          "y": 0.4517
+        },
+        "right_mouth_corner": {
+          "x": 0.5,
+          "y": 0.4552
+        }
+      }
+    }
+  ],
+  "type": {
+    "ai_generated": 0.42
+  },
+  "media": {
+    "id": "med_iRpXnOHQGVjXgTBRPKtia",
+    "uri": "image.png"
+  }
+}

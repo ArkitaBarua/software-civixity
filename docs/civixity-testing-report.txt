@@ -1,0 +1,728 @@
+Civixity Comprehensive Test Report (Text with Image Placeholders)
+
+Author: Mishti Mattu (23BCE1067)
+Project: Civixity – Next‑Gen Civic Engagement Platform
+Version: 1.0
+Date: 2025-10-17
+
+Table of Contents
+1. Executive Summary
+2. Test Cases for Civixity (Positive + Negative)
+3. Agile Tools Applied
+4. How Agile Improves Quality
+5. Functional Requirements & Testing – Main Scenario
+6. Test Execution & Result Analysis
+7. Non‑Functional Testing
+8. Risk Assessment & Mitigation
+9. Test Infrastructure & Environment
+10. Recommendations & Future Tests
+
+-------------------------------------------------------------------------------
+1) Executive Summary
+-------------------------------------------------------------------------------
+Overview
+Civixity enables citizens to report issues with images/locations, chat with an AI assistant, view city heatmaps, join volunteer activities, and earn points/badges. The platform combines a React (Vite+TS) frontend with a Node/Express backend, Supabase for data/auth, and AI services (Gemini, deepfake detection).
+
+Testing Scope
+This dossier defines tests across units, components, integration/API, functional UI (Selenium), and NFRs (performance, accessibility). It targets key modules reflected in this repo:
+- Backend routes: `POST /api/chatbot/chat`, `POST /api/detect-image`, `GET /api/chatbot/posts/*`
+- Frontend pages/components: `HomePage`, `ChatBot`, `Heatmaps`, `VolunteerActivities`, `RedeemPoints`, `Badges`
+
+Objectives
+- Functional correctness for core citizen flows: report issue, chatbot Q&A, view insights, engage & redeem
+- Defensive validation for inputs and files; resilience for AI/dependency failures
+- Time‑to‑first‑value UX (dialogs, toasts, accessibility) with performance budgets
+- Repeatable CI execution with coverage thresholds and artifacted evidence
+
+Key Stakeholders
+- End users (citizens), city operations staff, QA/engineering, and product owners
+
+KPIs / Quality Bars
+- p95 API latency (chatbot ≤ 800ms; detection ≤ 2000ms)
+- Lighthouse: Accessibility ≥ 90; Best Practices ≥ 90; Performance baseline tracked
+- Test coverage: Lines ≥ 80%, Functions ≥ 85%, Branches ≥ 75%
+- Defect MTTR: ≤ 1 sprint for non‑critical; hotfix path for critical
+
+Release Strategy
+- Feature flags for risky features; staged rollout to a pilot ward/city
+- CI gates on tests, coverage, Lighthouse budget (advisory initially, mandatory later)
+
+Current Results Snapshot (from Testing UI)
+- Total test cases defined: 22
+- Passing: 15
+- Pending: 7
+- Failing: 0
+- Pass rate: 68%
+- Performance: Functional detection UI ≤ 2 s observed; detailed latency/load pending.
+
+Note: Badge strip omitted in text; see Testing UI for visuals.
+
+-------------------------------------------------------------------------------
+2) Test Cases for Civixity (Positive + Negative)
+-------------------------------------------------------------------------------
+Format: ID | Category | Description | Input Data | Preconditions | Expected | Actual
+
+Versewise‑style clarity, independence, and coverage principles are applied here.
+
+Backend – Chatbot
+TC_CVX_001 | API | Chatbot responds to prompt | body: {message:"How to report pothole?"} | Server up; GEMINI_API_KEY set | 200; JSON with answer string; latency < 800 ms | [TO FILL]
+TC_CVX_002 | API | Chatbot rejects empty message | body: {message:""} | Server up | 400 with validation error | [TO FILL]
+TC_CVX_003 | API | Auth/Key missing behavior | env GEMINI_API_KEY unset | Server started without key | 500 with safe error; no secrets leaked | [TO FILL]
+
+Backend – Image Authenticity Detection
+TC_CVX_004 | API | Detect image authenticity (valid jpg) | multipart file: ai.jpg | Server up | 200; JSON includes {isAuthentic:boolean, score:number, labels[]} | [TO FILL]
+TC_CVX_005 | API | Reject unsupported type | file: script.txt | Server up | 415/400 with message "Unsupported media type" | [TO FILL]
+TC_CVX_006 | API | Large image handling | file: >5MB jpg | Size limit configured | 413 with friendly error; server stable | [TO FILL]
+
+Backend – Posts/Analytics
+TC_CVX_007 | API | Fetch posts by location | GET /api/chatbot/posts/location/{city} | Seed data present | 200; array; each item has id, title, location | [TO FILL]
+TC_CVX_008 | API | Fetch posts by category | GET /api/chatbot/posts/category/{cat} | Seed data | 200; array; fields validated | [TO FILL]
+TC_CVX_009 | API | Summary endpoint | GET /api/chatbot/posts/summary | Seed data | 200; JSON with counts and recent summaries | [TO FILL]
+
+Frontend – Components
+TC_CVX_010 | Component | HomePage renders nav & hero | n/a | App boots in jsdom | Title visible; nav links: Home, Polls, Heatmaps, Volunteer, Redeem | [TO FILL]
+TC_CVX_011 | Component | ChatBot sends prompt & shows reply | mock API resolves | ChatBot mounted | Input accepts text; after send, shows streaming/response | [TO FILL]
+TC_CVX_012 | Component | Heatmaps displays markers | mock data | Google Maps key mocked | Map renders; markers length == dataset length | [TO FILL]
+TC_CVX_013 | Component | RedeemPoints form validation | invalid input | PointsContext provided | Inline errors; no submission | [TO FILL]
+
+Functional – UI Flows (Selenium)
+TC_CVX_014 | Functional | Report issue with image | valid image, location | Frontend+backend running | Success toast; ticket ID visible | [TO FILL]
+TC_CVX_015 | Functional | Volunteer activity join flow | click join on activity | Seed activities | Status updates to "Joined"; points increment | [TO FILL]
+TC_CVX_016 | Functional | Chatbot quick Q&A | prompt="Nearest ward office" | Services up | Answer card rendered with content | [TO FILL]
+
+Validation/Negative – UI
+TC_CVX_017 | UI Validation | Empty issue form blocked | empty fields | Client validation enabled | Error messages under required fields | [TO FILL]
+TC_CVX_018 | Security | XSS attempt in title escaped | title="<script>alert(1)</script>" | Form accepts text only | Escaped output; no script execution | [TO FILL]
+
+NFR – Performance/Resilience
+TC_CVX_019 | Perf | Chatbot p95 latency < 800 ms | 100 requests spread | Env stable | 95th percentile <= 800 ms | [TO FILL]
+TC_CVX_020 | Perf | Image detection < 2 s end‑to‑end | 20 uploads | GPU/CPU normal | Median < 1500 ms; p95 < 2000 ms | [TO FILL]
+TC_CVX_021 | Resilience | Rate limit excessive calls | 50 rps to chatbot | Limiter on | Responses 429 after threshold; retry‑after header | [TO FILL]
+TC_CVX_022 | Accessibility | Key pages meet a11y basics | Home, ChatBot | Lighthouse run | Score >= 90; roles/labels present | [TO FILL]
+
+Actual Results Summary (from Testing UI)
+- TC_CVX_001: PASS – 200 JSON response for valid prompt
+- TC_CVX_002: PASS – 400 validation for empty message
+- TC_CVX_003: PENDING – provider/env error path
+- TC_CVX_004: PASS – detection returns { result: "AI" | "Natural" }
+- TC_CVX_005: PASS – unsupported file → 415
+- TC_CVX_006: PASS – oversized file → 413
+- TC_CVX_007: PASS – posts by location returns array
+- TC_CVX_008: PASS – posts by category returns array
+- TC_CVX_009: PASS – posts summary returns text
+- TC_CVX_010: PASS – HomePage renders essentials
+- TC_CVX_011: PASS – ChatBot prompt → reply (mock)
+- TC_CVX_012: PENDING – Heatmaps markers E2E
+- TC_CVX_013: PASS – Redeem validation
+- TC_CVX_014: PASS – authenticity UI on upload
+- TC_CVX_015: PENDING – Volunteer join flow
+- TC_CVX_016: PASS – Chatbot answer card
+- TC_CVX_017: PASS – Empty report blocked
+- TC_CVX_018: PASS – XSS escaped
+- TC_CVX_019: PENDING – Chatbot p95 latency
+- TC_CVX_020: PENDING – Detect‑image p95
+- TC_CVX_021: PENDING – 429 burst
+- TC_CVX_022: PENDING – Lighthouse a11y
+
+Subsections and References
+- For step-by-step procedures, data, and code samples related to these cases, see:
+  - Appendix A – Detailed Test Case Specifications (Civixity)
+  - Appendix B – Component Testing Patterns (React Testing Library)
+  - Appendix C – Supertest Examples for Civixity API
+
+-------------------------------------------------------------------------------
+3) Agile Tools Applied (Civixity)
+-------------------------------------------------------------------------------
+Strategic Tool Selection Framework
+The Civixity project uses a focused set of agile tools to support iterative development, continuous integration, collaboration, and quality assurance. Together they enable a tight feedback loop from story definition to automated verification and deployment.
+
+Project Management and Planning Tools
+GitHub Projects: Comprehensive Backlog and Sprint Management
+Primary Function: Central hub for backlog management, sprint planning, task assignment, and progress tracking for the Civixity team.
+Key Features:
+- Backlog Management: Issues with acceptance criteria, test links (TC_CVX_*), and story points
+- Sprint Planning: Two‑week sprints with prioritized items
+- Progress Tracking: Burndown and velocity (via insights/boards)
+- Automation: PR merges auto‑move issues and update labels
+- Integration: Tight coupling with repo → traceability from story → PR → tests
+Practical Application in Civixity:
+- Sprint 1: Image detection route and validations (TC_CVX_004–006)
+- Sprint 2: Chatbot API and error handling (TC_CVX_001–003)
+- Sprint 3: UI scaffolding for Home, Heatmaps, Testing page (TC_CVX_010–013)
+- Sprint 4: Functional + NFR hardening (TC_CVX_014–022)
+Benefits:
+- High visibility into active work and blockers
+- Auto updates on commits/merges reduce status overhead
+- Historical velocity informs capacity planning
+
+Trello: Visual Task Management and Collaboration
+Primary Function: Lightweight Kanban view for async collaboration and demo prep.
+Board Structure (example):
+- To Do: Add rate limiting tests; Heatmaps marker mocks; Lighthouse checks
+- In Progress: Volunteer join flow; Chatbot resilience path
+- In Review: Detect‑image validations; HomePage a11y tweaks
+- Done: Testing page; Chatbot happy path; Posts endpoints
+Collaboration Benefits:
+- Simple visual progress for non‑technical stakeholders
+- Checklists for sub‑tasks (test data, screenshots, a11y)
+- Attach PDFs/screenshots from /platform/testing
+
+Jira (when scaling): Enterprise‑grade workflows and reporting
+Recommended if the team grows or multiple clients require formal defect tracking.
+Advanced Features:
+- Custom workflows (e.g., QA Review → UAT → Ready for Release)
+- Time tracking, release versions, advanced filters and dashboards
+- Link requirements → test cases → defects → releases
+
+Development and Testing Tools
+GitHub Actions: Continuous Integration Pipeline
+Primary Function: Automate linting, testing, building, and deployments on each PR and on schedule.
+Current Civixity Configuration (recommended):
+Triggers:
+- On push to main and develop branches
+- On pull_request to any branch
+- Nightly scheduled run (smoke + Lighthouse)
+Pipeline Stages:
+- Stage 1 – Checkout & Setup (≈30s):
+  - Checkout repo, set up Node 18, install dependencies, load env vars
+- Stage 2 – Lint & Typecheck (≈45s):
+  - Run ESLint and TypeScript compiler; security audit
+- Stage 3 – Unit/Component Tests (≈60s):
+  - Vitest with React Testing Library; collect coverage; fail if < thresholds
+- Stage 4 – Integration/API Tests (≈90s):
+  - Start test DB/services, run Supertest suites, stop services
+- Stage 5 – Build Verification (≈45s):
+  - Vite build, backend build; check bundle sizes
+- Stage 6 – Deployment (main only):
+  - Deploy to staging; smoke tests; Slack notifications
+Benefits:
+- Prevents regressions from merging
+- Immediate feedback on code health
+- Consistent builds and artifact generation
+
+Vitest: Modern TypeScript Testing Framework
+Primary Function: Fast, modern test execution optimized for React and TypeScript.
+Why Vitest for Civixity:
+- Native TS support and JS DOM integration
+- Fast runs for tight feedback loops
+- Compatible with React Testing Library
+Example Configuration:
+  import { defineConfig } from 'vitest/config'
+  import react from '@vitejs/plugin-react'
+  export default defineConfig({
+    plugins: [react()],
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: ['./test/setup.ts'],
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'html', 'json'],
+        exclude: ['node_modules/', 'test/', '**/*.d.ts', '**/*.config.*'],
+        lines: 80, functions: 85, branches: 75, statements: 80
+      }
+    }
+  })
+
+React Testing Library: User‑Centric Component Testing
+Primary Function: Validate UI from the user's perspective using roles/labels/text instead of internals.
+Key Patterns for Civixity:
+- Input/Output: Fill forms, click buttons, assert visible text
+- Async: waitFor/findBy* for data‑driven UI
+- Error States: Mock API errors, assert fallback UIs
+Advantages:
+- Resilient to refactors; encourages accessibility best practices
+
+Supertest: HTTP Assertions for API
+Primary Function: Express endpoint tests with chainable HTTP assertions.
+Examples (Civixity):
+- GET /api/chatbot/posts/category/:category → expect 200 JSON array with fields
+- POST /api/detect-image (txt) → expect 415 and error body
+- POST /api/chatbot/chat (empty) → expect 400 validation error
+
+-------------------------------------------------------------------------------
+4) How Agile Improves Quality
+-------------------------------------------------------------------------------
+- Iteration: Deliver vertical slices (e.g., ChatBot MVP → error handling → streaming → analytics). Each slice ships with definition-of-done checks and demoable outcomes.
+- Frequent Feedback: Sprint reviews with city stakeholders; CI on every PR; nightly smoke and Lighthouse runs with trend charts.
+- Adaptability: Backlog re-prioritized when categories, severity thresholds, or UX change; experiments behind feature flags.
+- Built‑in Quality: DoD includes unit/component/API tests, a11y checks, bundle budgets, security scan, and performance budgets.
+- Traceability: Each TC_CVX_* test maps to a story/task; PR templates require test evidence or appendix references.
+
+-------------------------------------------------------------------------------
+5) Functional Requirements & Testing – Main Scenario
+-------------------------------------------------------------------------------
+Scenario: Validate that uploading an image to report an issue triggers deepfake/authenticity detection and returns a structured result.
+
+Flow
+1. Open Civixity report page.
+2. Select a photo (`ai.jpg`).
+3. Submit the form.
+4. Verify backend response populates authenticity UI (badge/score) and allows submission of the issue ticket.
+
+Selenium (Java) – UI Automation (run in Eclipse)
+```java
+import org.junit.jupiter.api.*;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.*;
+import java.nio.file.Paths;
+import java.time.Duration;
+
+public class CivixityImageReportTest {
+    WebDriver driver;
+    WebDriverWait wait;
+
+    @BeforeEach
+    void setUp() {
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+    }
+
+    @AfterEach
+    void tearDown() { if (driver != null) driver.quit(); }
+
+    @Test
+    void imageUploadTriggersAuthenticityDetection() {
+        driver.get("http://localhost:5173"); // adjust to your dev URL
+        // navigate to report section if needed
+        WebElement fileInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type='file']")));
+        String filePath = Paths.get("public", "ai.jpg").toAbsolutePath().toString();
+        fileInput.sendKeys(filePath);
+
+        driver.findElement(By.id("submit-report")) // update selector to your button ID
+              .click();
+
+        WebElement badge = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("authenticity-badge")));
+        String text = badge.getText().toLowerCase();
+        Assertions.assertTrue(text.contains("authentic") || text.contains("manipulated"));
+    }
+}
+```
+
+API (REST‑Assured Java) – Direct Verification of `/api/detect-image`
+```java
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.Test;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
+public class DetectImageApiTest {
+    @Test
+    void detectsAuthenticityForValidJpg() {
+        RestAssured.baseURI = "http://localhost:4000";
+        given()
+            .multiPart("file", new java.io.File("public/ai.jpg"))
+        .when()
+            .post("/api/detect-image")
+        .then()
+            .statusCode(200)
+            .body("isAuthentic", anyOf(is(true), is(false)))
+            .body("score", allOf(notNullValue()));
+    }
+}
+```
+
+Expected Output (samples)
+Functional output visible in Testing UI: authenticity message/badge appears after submission; toast confirms post creation.
+
+-------------------------------------------------------------------------------
+6) Test Execution & Result Analysis
+-------------------------------------------------------------------------------
+- Execution Protocol
+  - Environment snapshot: commit hash, node versions, env vars (sanitized)
+  - Test ordering: unit → component → API → functional → NFR
+  - Artifacts: JUnit XML, coverage JSON/HTML, screenshots from /platform/testing
+- Result Rollup (template)
+  - Unit: [pass]/[fail]/[skip], coverage lines/functions/branches
+  - Component: [pass]/[fail] with a11y assertions count
+  - API: [pass]/[fail]; p50/p95 latencies for key routes
+  - Functional: [pass]/[fail] with average step duration
+- Defect Analysis
+  - Root cause categories: Data setup, Network, Logic/Validation, UI Timing
+  - MTTR target: < 1 sprint; Hotfix if production‑critical
+  - Link each defect to the impacted TC_CVX_* and PR
+
+IMAGE_PLACEHOLDER: ./images/civixity-execution-summary.png
+
+-------------------------------------------------------------------------------
+7) Non‑Functional Testing
+-------------------------------------------------------------------------------
+Performance (Java timing via Selenium)
+```java
+long start = System.nanoTime();
+// click submit and wait for authenticity badge
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("authenticity-badge")));
+long ms = (System.nanoTime() - start) / 1_000_000;
+System.out.println("Detection UI time: " + ms + " ms");
+org.junit.jupiter.api.Assertions.assertTrue(ms <= 2000);
+```
+
+Performance Budgets
+- Chatbot: p95 ≤ 800 ms; error rate ≤ 1% under moderate load
+- Detect‑image: p95 ≤ 2000 ms; throughput ≥ 10 rpm baseline on dev
+- Frontend: FCP ≤ 2.5 s (dev), TBT ≤ 300 ms, bundle ≤ target size
+
+Accessibility
+- Lighthouse in CI; roles/labels present on `ChatBot`, `HomePage`, forms; color contrast checked
+- Keyboard navigation for dialogs and menus; aria‑live regions for toasts
+
+Resilience / Rate Limits
+- Chatbot endpoint under burst: expect 429 with `retry-after` after threshold.
+
+Security
+- Validate server‑side file type checks; attempt XSS in titles/descriptions is escaped.
+
+-------------------------------------------------------------------------------
+8) Risk Assessment & Mitigation
+--------------------------------------------------------------------------------
+Risk Register (Top Items)
+- External AI/API failures (Probability: Medium, Impact: High)
+  - Mitigation: Circuit breaker, cached/basic fallback answers, exponential backoff; healthchecks
+- Oversized/unsupported uploads (P: High, I: Medium)
+  - Mitigation: 8 MB limit, MIME allow‑list, early return codes (413/415), user guidance
+- UI flakiness/timing (P: Medium, I: Medium)
+  - Mitigation: Explicit waits, stable selectors, mock data for deterministic tests
+- Security/XSS/PII leakage (P: Low, I: High)
+  - Mitigation: Escape/encode untrusted content, server‑side validation, scrub logs; secure headers
+- Performance regression (P: Medium, I: Medium)
+  - Mitigation: Budgets in CI; nightly runs; track trends; rollbacks on violation
+
+Ownership & Monitoring
+- Owners per module (Chatbot, Detection, UI)
+- Alerts routed to engineering Slack; on‑call for production incidents
+
+-------------------------------------------------------------------------------
+9) Test Infrastructure & Environment
+--------------------------------------------------------------------------------
+Environments
+- Dev: FE http://localhost:5173, BE http://localhost:4000, Speech http://localhost:5001
+- CI: GitHub Actions Ubuntu runners; headless Chrome for Selenium; artifacts persisted
+
+Versions / Tooling
+- Node 18.x, npm 10.x, Chrome ≥ 129, Java 17 for Selenium
+- Vitest + RTL; Supertest for API; REST‑Assured Java optional for contract checks
+
+Datasets & Accounts
+- Supabase seed: posts, comments, sample activities for volunteer tests
+- Test accounts: user (citizen), admin (ops) – credentials stored in CI secrets
+
+Artifacts
+- JUnit XML (unit/component/API), coverage HTML/JSON, Lighthouse reports, screenshots from Testing UI and Selenium
+
+-------------------------------------------------------------------------------
+10) Recommendations & Future Tests
+--------------------------------------------------------------------------------
+Roadmap
+- Short term (next sprint):
+  - Complete pending tests TC_CVX_012, 015, 019–022
+  - Add Supertest suites for posts/category/location and chatbot 500 path
+  - Add Lighthouse job with budgets; fail on severe regressions
+- Medium term (two sprints):
+  - k6 smoke for chatbot/detect‑image; add p95/p99 tracking to CI summary
+  - Visual regression (Chromatic/Playwright) for ChatBot and Heatmaps
+  - A11y assertions in RTL tests; axe checks
+- Long term:
+  - Synthetic monitoring for uptime/latency; weekly trend reports
+  - Contract tests for external AI services; canary environments
+
+CI Enforcement
+- Required checks: unit/component/API tests; coverage thresholds; basic Lighthouse
+- Advisory checks initially for perf/a11y; move to required after baselining
+
+
+-------------------------------------------------------------------------------
+Component Testing Patterns for Civixity (React Testing Library)
+-------------------------------------------------------------------------------
+Pattern 1 – Testing User Input and Output (Report form)
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import HomePage from '@/pages/HomePage';
+
+test('user can open report dialog and submit when valid', async () => {
+  render(<HomePage />);
+
+  // Open dialog
+  await userEvent.click(screen.getByText(/report a new issue/i));
+
+  // Fill inputs
+  await userEvent.type(screen.getByLabelText(/issue title/i), 'Pothole at Main St');
+  await userEvent.type(screen.getByLabelText(/description/i), 'Large pothole near the bus stop');
+  await userEvent.type(screen.getByLabelText(/location/i), 'Main Street, Ward 5');
+
+  // Submit
+  await userEvent.click(screen.getByRole('button', { name: /submit report/i }));
+
+  // Confirmation toast/snackbar appears (implementation dependent)
+  expect(await screen.findByText(/posted/i)).toBeInTheDocument();
+});
+```
+
+Pattern 2 – Testing Async Operations (ChatBot reply)
+```tsx
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import ChatBot from '@/components/ChatBot';
+
+// Mock the backend call
+global.fetch = vi.fn().mockResolvedValue({
+  ok: true,
+  json: async () => ({ response: 'You can report a pothole via the Home page.' })
+});
+
+test('chatbot sends prompt and displays reply', async () => {
+  render(<ChatBot />);
+
+  await userEvent.click(screen.getByRole('button', { name: /open chat/i, exact: false }));
+  await userEvent.type(screen.getByPlaceholderText(/ask me anything/i), 'How to report a pothole?');
+  await userEvent.click(screen.getByRole('button', { name: /send/i }));
+
+  expect(await screen.findByText(/report a pothole/i)).toBeInTheDocument();
+});
+```
+
+Pattern 3 – Testing Error States (Heatmaps data failure)
+```tsx
+import { render, screen } from '@testing-library/react';
+import Heatmaps from '@/pages/Heatmaps';
+
+// Mock API client to reject
+vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('API failed')));
+
+test('displays error when heatmap data fails', async () => {
+  render(<Heatmaps />);
+  expect(await screen.findByText(/failed to load/i)).toBeInTheDocument();
+});
+```
+
+Advantages Over Other Approaches
+- Tests target user-visible behavior and a11y roles
+- Less brittle to refactors
+- Realistic user interactions via userEvent
+
+-------------------------------------------------------------------------------
+Supertest Examples for Civixity API
+-------------------------------------------------------------------------------
+Example 1 – Chatbot happy path
+```ts
+import request from 'supertest';
+import app from '../index'; // your Express app export
+
+describe('POST /api/chatbot/chat', () => {
+  it('returns response with 200', async () => {
+    const res = await request(app)
+      .post('/api/chatbot/chat')
+      .send({ message: 'How to report a pothole?', userId: null })
+      .expect(200)
+      .expect('Content-Type', /json/);
+
+    expect(res.body).toHaveProperty('response');
+    expect(typeof res.body.response).toBe('string');
+  });
+});
+```
+
+Example 2 – Chatbot validation error
+```ts
+describe('POST /api/chatbot/chat validation', () => {
+  it('returns 400 for empty message', async () => {
+    const res = await request(app)
+      .post('/api/chatbot/chat')
+      .send({ message: '', userId: null })
+      .expect(400);
+    expect(res.body.error).toMatch(/message is required/i);
+  });
+});
+```
+
+Example 3 – Detect‑image unsupported type
+```ts
+import path from 'path';
+
+describe('POST /api/detect-image', () => {
+  it('returns 415 for unsupported media type', async () => {
+    const filePath = path.resolve(__dirname, 'fixtures', 'script.txt');
+    const res = await request(app)
+      .post('/api/detect-image')
+      .attach('image', filePath)
+      .expect(415);
+    expect(res.body.error).toMatch(/unsupported media type/i);
+  });
+});
+```
+
+Example 4 – Posts endpoints
+```ts
+describe('GET /api/chatbot/posts/category/:category', () => {
+  it('returns list for category', async () => {
+    const res = await request(app)
+      .get('/api/chatbot/posts/category/Potholes')
+      .expect(200)
+      .expect('Content-Type', /json/);
+    expect(Array.isArray(res.body.posts)).toBe(true);
+  });
+});
+
+describe('GET /api/chatbot/posts/location/:location', () => {
+  it('returns list for location', async () => {
+    const res = await request(app)
+      .get('/api/chatbot/posts/location/Kochi')
+      .expect(200);
+    expect(res.body).toHaveProperty('count');
+  });
+});
+```
+
+Benefits for Civixity
+- Fluent assertions with status/headers/content
+- Easy to cover happy paths, validations, and error cases
+- Integrates cleanly into GitHub Actions for CI enforcement
+
+
+-------------------------------------------------------------------------------
+Detailed Test Case Specifications (Civixity)
+-------------------------------------------------------------------------------
+
+TC_CVX_001: Chatbot – Valid Prompt
+Category: API Test – Chatbot Service
+Objective: Validate that the chatbot returns a relevant response when provided a valid prompt.
+Preconditions:
+- Backend running at http://localhost:4000
+- ENV set with GEMINI_API_KEY
+- Endpoint available: POST /api/chatbot/chat
+Test Input (JSON):
+{ "message": "How do I report a pothole?", "userId": null }
+Test Steps:
+1) Send POST request with the above payload
+2) Capture HTTP status, headers, and body
+3) Verify presence of 'response' field (string)
+4) Verify response time < 800 ms (target)
+5) Ensure no provider details leaked in payload
+Expected Results:
+- 200 OK
+- JSON: { response: string, timestamp: ISO8601, context: {...} }
+- Latency < 800 ms
+- No sensitive data exposure
+Actual Result: [TO FILL AFTER RUN]
+Notes: Validates core AI integration path.
+
+TC_CVX_002: Chatbot – Empty Message Validation
+Category: API Test – Chatbot Service
+Objective: Ensure empty/blank message is rejected with a validation error.
+Preconditions: Backend running; endpoint available
+Test Input (JSON): { "message": "", "userId": null }
+Test Steps:
+1) POST payload with empty message
+2) Inspect status and error body
+Expected Results:
+- 400 Bad Request
+- JSON includes: { error: "Message is required" }
+Actual Result: [TO FILL]
+Notes: Confirms server-side input validation.
+
+TC_CVX_004: Image Authenticity Detection – Valid JPG
+Category: API Test – Detection Service
+Objective: Validate authenticity detection returns a structured result for a supported image.
+Preconditions:
+- Backend running; POST /api/detect-image
+- Test image available: public/ai.jpg
+Test Input: multipart/form-data with field name 'image' = ai.jpg
+Test Steps:
+1) POST the image
+2) Capture status and body
+3) Verify result ∈ { "AI", "Natural" }
+Expected Results:
+- 200 OK
+- JSON: { result: "AI" | "Natural" }
+Actual Result: [TO FILL]
+Notes: Confirms base path works and Python subprocess returns expected tokens.
+
+TC_CVX_005: Image Authenticity Detection – Unsupported Type
+Category: API Negative Test – Detection Service
+Objective: Ensure non-image uploads are rejected early.
+Preconditions: Backend running
+Test Input: multipart file 'image' = script.txt (text/plain)
+Test Steps:
+1) POST invalid file
+2) Inspect status and error body
+Expected Results:
+- 415 Unsupported Media Type
+- JSON: { error: "Unsupported media type" }
+Actual Result: [TO FILL]
+Notes: Matches preflight MIME checks added in route.
+
+TC_CVX_006: Image Authenticity Detection – Oversized File
+Category: API Negative Test – Detection Service
+Objective: Enforce size limits to protect resources.
+Preconditions: Backend running; max 8 MB configured
+Test Input: > 8 MB jpg/png
+Test Steps:
+1) POST large image
+2) Inspect status and error body
+Expected Results:
+- 413 Payload Too Large
+- JSON: { error: "File too large" }
+Actual Result: [TO FILL]
+Notes: Prevents heavy uploads from hitting Python subprocess.
+
+TC_CVX_010: HomePage Component – Render Essentials
+Category: Component Test – React UI
+Objective: Validate top-level elements render and are accessible.
+Preconditions: React Testing Library configured; jsdom environment
+Test Setup: Render <HomePage /> with required providers/contexts
+Test Steps:
+1) Render component
+2) Query for navigation links (Home, Polls, Heatmaps, Volunteer, Redeem)
+3) Ensure no console errors
+4) Check basic ARIA roles/labels exist
+Expected Results:
+- All key links visible
+- No console errors
+- Elements have roles/labels
+Actual Result: [TO FILL]
+Notes: Baseline UI smoke test.
+
+TC_CVX_014: Functional – Report Issue with Image (Selenium)
+Category: E2E Functional Test – UI + API integration
+Objective: Verify the full flow from selecting an image to authenticity UI feedback.
+Preconditions: Frontend (5173) & Backend (4000) running; ai.jpg present
+Test Steps:
+1) Navigate to /platform
+2) Open "Report New Issue" dialog
+3) Upload ai.jpg via file input
+4) Submit report
+5) Wait for authenticity badge/text
+Expected Results:
+- Badge or warning appears reflecting detection state
+- Toast confirmation after successful post
+Actual Result: [TO FILL]
+Notes: Capture screenshots for the report.
+
+TC_CVX_017: UI Validation – Empty Report Blocked
+Category: UI Validation Test
+Objective: Ensure client validation prevents empty submissions.
+Preconditions: HomePage rendered
+Test Steps:
+1) Open report dialog
+2) Leave required fields empty
+3) Click Submit
+Expected Results:
+- Inline errors displayed
+- No network request sent
+Actual Result: [TO FILL]
+Notes: Prevents bad data entry and unnecessary API calls.
+
+TC_CVX_019: Performance – Chatbot p95 Latency
+Category: Non‑Functional Test – Performance
+Objective: Validate p95 latency under moderate load.
+Preconditions: Stable environment; logging enabled
+Test Steps:
+1) Send 100 prompts over 60s
+2) Record each response time
+3) Compute p95
+Expected Results:
+- p95 ≤ 800 ms
+Actual Result: [TO FILL]
+Notes: Gate merges if budget is exceeded.
+
